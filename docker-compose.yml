@@ -1,0 +1,44 @@
+version: '3.4'
+
+services:
+
+  db:
+    container_name: heart_db
+    image: postgres:12
+    env_file:
+      - .env
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - TZ=Europe/Kiev
+
+  migrations:
+    container_name: heart_migrations
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=db
+    entrypoint: ./tools/run_stuff.sh -m
+
+  app:
+    container_name: heart_app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env
+    ports:
+      - ${APP_PORT}:8000
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+    entrypoint: ./tools/run_stuff.sh -s
