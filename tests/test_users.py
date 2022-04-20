@@ -54,7 +54,7 @@
 #         ({'email': 'testemail@'}, 'invalid email'),
 #         ({'password': 'testpsw'}, 'insecure password'),
 #         (
-#             {'password': 'psw2', 'confirmed_password': 'psw1'}, 
+#             {'password': 'psw2', 'confirmed_password': 'psw1'},
 #             'insecure password'
 #         )
 #     ]
