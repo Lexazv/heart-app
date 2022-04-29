@@ -33,3 +33,8 @@ class InvalidPersonalData(ValidationError):
 class InvalidAge(ValidationError):
 
     error_detail = ErrorDetails.invalid_age
+
+
+class FileNotExist(ValidationError):
+
+    error_detail = ErrorDetails.file_not_exist

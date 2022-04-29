@@ -29,9 +29,13 @@ HEART_DATA_REQUIRED_COLUMNS = {
 }
 
 
+HEART_DATA_EQUAL_VALUE_COLS = ['age', 'sex']
+
+
 class ErrorDetails(Enum):
 
     unaccaptable_columns = 'File contains unaccaptable columns.'
     invalid_personal_data = 'File contains invalid personal data.'
     invalid_age = 'Invalid age.'
     has_null_column = 'Columns in file contain nulls.'
+    file_not_exist = 'Invalid filename.'

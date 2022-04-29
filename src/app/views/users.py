@@ -1,14 +1,15 @@
 from fastapi import APIRouter, HTTPException, Request, status
 
+from src.app.db_handlers.files import get_files_by_user_id
 from src.app.db_handlers.users import (
-    create_user, get_user_by_email, check_user_by_email, context
+    check_user_by_email, context, create_user, get_user_by_email
 )
-from src.services.auth import create_access_token, token_required
 from src.app.schemas.requests import UserData, UserLogin
-from src.app.schemas.responses import UserProfile, UserCreated, Token
-
+from src.app.schemas.responses import Token, UserCreated
+from src.services.auth import create_access_token, token_required
 
 users = APIRouter()
+
 
 @users.get('/hello')
 async def welcome():
@@ -16,8 +17,8 @@ async def welcome():
 
 
 @users.post(
-    '/registration', 
-    response_model=UserCreated, 
+    '/registration',
+    response_model=UserCreated,
     status_code=status.HTTP_201_CREATED
 )
 async def registration(request: Request, user_data: UserData):
@@ -50,12 +51,14 @@ async def login_user(request: Request, user_data: UserLogin):
     return token
 
 
-@users.get('/{user_id}', response_model=UserProfile)
+@users.get('/{user_id}/files')
 @token_required
-async def get_user_profile(user_id: int, request: Request):
-    current_user = request.state.current_user
+async def get_user_files(user_id: int, request: Request):
+    with request.app.db.begin() as conn:
+        if request.state.current_user.id != user_id:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND
+            )
+        user_files = get_files_by_user_id(conn=conn, user_id=user_id)
 
-    if current_user.id != user_id:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)              # Update to get heart data + nested schemas response
-
-    return current_user
+    return user_files

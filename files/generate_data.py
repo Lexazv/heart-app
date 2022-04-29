@@ -1,29 +1,31 @@
-import os
-from typing import List
 from concurrent.futures import ThreadPoolExecutor
+from typing import List
 
-import requests
 import openpyxl
-
+import requests
 
 # Specify filename with users data here:
-users_data_file = './generate/data.xlsx'
+users_data_file = 'files/data.xlsx'
 
 # Specify filename with heart data here:
 heart_data_file = ...
 
 
 def prepare_users_data(filename: str) -> List[dict]:
-    f = openpyxl.load_workbook(filename=filename).active
+    file = openpyxl.load_workbook(filename=filename).active
 
     cols = list(
         map(
-            lambda c: c.value.lower().replace(' ', '_'), *f.iter_rows(max_row=1)
+            lambda column: column.value.lower()
+            .replace(' ', '_'), *file.iter_rows(max_row=1)
         )
     )
     users_data = [
         dict(
-            zip(cols, [c.value for c in row])) for row in f.iter_rows(min_row=2)
+            zip(
+                cols, [c.value for c in row]
+            )
+        ) for row in file.iter_rows(min_row=2)
     ]
 
     return users_data

@@ -1,10 +1,17 @@
+from unittest.mock import Mock
+
 import pytest
 from jose.exceptions import JWTError
 
 from src.services.auth import create_access_token, get_token_payload
-from tests.tests_data.users import (PAYLOAD_DECODE_ARGS, PAYLOAD_ENCODE_ARGS,
-                                    TOKEN_PAYLOAD, TOKEN_RESPONSE,
-                                    USER_PROFILE)
+from tests.tests_data.users import (
+    PAYLOAD_DECODE_ARGS, 
+    PAYLOAD_ENCODE_ARGS,
+    TOKEN_PAYLOAD, TOKEN_RESPONSE,
+    USER_PROFILE
+)
+
+mocked_obj = Mock()
 
 
 @pytest.mark.parametrize(
@@ -17,7 +24,7 @@ def test_create_token(email):
     assert isinstance(result["token"], str)
 
 
-def test_get_token_encode_args(monkeypatch, mocked_obj):
+def test_get_token_encode_args(monkeypatch):
     monkeypatch.setattr("src.services.auth.encode", mocked_obj)
 
     create_access_token(email=USER_PROFILE["email"])
@@ -49,7 +56,7 @@ def test_get_token_payload_exception(token, exception):
         get_token_payload(token)
 
 
-def test_get_token_decode_args(monkeypatch, mocked_obj):
+def test_get_token_decode_args(monkeypatch):
     monkeypatch.setattr("src.services.auth.decode", mocked_obj)
 
     token = create_access_token(email=USER_PROFILE["email"])["token"]

@@ -1,1 +1,1 @@
-MOCKED_FILES_PATH = "/tests/mock_files"
+MOCKED_FILES_PATH = "tests/mock_files"

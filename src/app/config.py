@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     DB_HOST: str
     DB_USER: str
     DB_PASSWORD: str
-    DB_PORT: int = 5432
+    DB_PORT: int
     DB_NAME: str
 
     APP_PORT: str

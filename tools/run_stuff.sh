@@ -15,5 +15,6 @@ do
     case $flag in
         s) runServer;;
         m) runMigrations;;
+        *) echo "Invalid flag!"; exit;;
     esac
 done
