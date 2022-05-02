@@ -10,11 +10,6 @@ class UserCreated(BaseModel):
     created_on: datetime
 
 
-class Token(BaseModel):
-
-    token: str
-
-
 class FileData(BaseModel):
 
     id: int

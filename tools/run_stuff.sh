@@ -5,7 +5,11 @@ runServer() {
 }
 
 runMigrations() {
-    sleep 2
+    until ! nc -z localhost 5432
+    do	    	    
+        sleep 1
+    done
+
     alembic upgrade head
 }
 
@@ -15,6 +19,6 @@ do
     case $flag in
         s) runServer;;
         m) runMigrations;;
-        *) echo "Invalid flag!"; exit;;
+        *) echo "Invalid flag!"; exit 1;;
     esac
 done

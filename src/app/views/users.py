@@ -5,7 +5,7 @@ from src.app.db_handlers.users import (
     check_user_by_email, context, create_user, get_user_by_email
 )
 from src.app.schemas.requests import UserData, UserLogin
-from src.app.schemas.responses import Token, UserCreated
+from src.app.schemas.responses import UserCreated
 from src.services.auth import create_access_token, token_required
 
 users = APIRouter()
@@ -34,7 +34,7 @@ async def registration(request: Request, user_data: UserData):
     return user
 
 
-@users.post('/login', response_model=Token)
+@users.post('/login')
 async def login_user(request: Request, user_data: UserLogin):
     with request.app.db.begin() as conn:
         request_user = get_user_by_email(conn=conn, email=user_data.email)
@@ -48,7 +48,7 @@ async def login_user(request: Request, user_data: UserLogin):
 
         token = create_access_token(email=user_data.email)
 
-    return token
+    return {"token": token}
 
 
 @users.get('/{user_id}/files')

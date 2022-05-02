@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.10-slim
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 RUN command apt-get update && apt-get upgrade -y
-RUN apt-get install libpq-dev python-dev gcc -y
+RUN apt-get install libpq-dev python-dev gcc netcat -y
 
 # Install pip requirements
 COPY requirements.txt .

@@ -14,7 +14,7 @@ def create_access_token(email: str) -> str:
         timezone('Europe/Kiev')) + timedelta(minutes=15)
     )
     token = encode(data, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-    return {'token': token}
+    return token
 
 
 def get_token_payload(token: str) -> dict:
