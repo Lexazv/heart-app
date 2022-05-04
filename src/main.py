@@ -23,4 +23,3 @@ def stop_db():
 # TODO:
 #     - setup logging; search by 'print' word
 #     - implement heart data calculations
-#     - replace docker run_stuff script with wait-for-it.sh (investigate)

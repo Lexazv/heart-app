@@ -1,27 +1,21 @@
-import os
 from itertools import zip_longest
 from concurrent.futures import ThreadPoolExecutor
 
 import openpyxl
 import requests
 
-from src.services.auth import create_access_token
-
 
 # Specify filename with users data here:
-USERS_DATA_FILE = 'files/data.xlsx'
+USERS_DATA_FILE: str = 'files/data.xlsx'
 
-# Specify filename with heart data here:
-# dict(<user_email>: <filename>) to store unique heart data from <filename> for each user with <user_email>.
-HEART_DATA_STORAGE = {
-    "testemaill@gmail.com": "files/request_file.csv",
-    "temail@gamil.com": "files/request_file.csv"
-}
-
+# Specify if you want to get access tokens for created users.
+GENERATE_TOKENS: bool = True
 
 def prepare_users_data(filename: str) -> list:
     file = openpyxl.load_workbook(filename=filename).active
-    cols = ["email", "password", "first_name", "last_name", "confirmed_password"]
+    cols = [
+        "email", "password", "first_name", "last_name", "confirmed_password"
+    ]
 
     users_data = [
         dict(
@@ -50,30 +44,25 @@ def fill_db_users(users_data: list) -> None:
         print(response.json())
 
 
-def fill_db_heart_data(heart_data_storage: dict) -> None:
-    heart_data_storage = list(HEART_DATA_STORAGE.items())
+def get_tokens(users_data: list) -> None:
 
-    def _create_heart_data(data_to_store: tuple):
-        email, filename = data_to_store
-
+    def _get_token(user_data: dict):
         response = requests.post(
-            url="http://localhost:8000/api/files/",
-            json={"filename": os.path.abspath(filename)},
-            headers={"Authorization": create_access_token(email=email)}
+            url='http://localhost:8000/api/users/login', json=user_data
         )
-
         return response
 
-    with ThreadPoolExecutor() as executor:
-        responses = executor.map(_create_heart_data, heart_data_storage)
+    tokens = {}
 
-    for response in responses:
-        print(response.json())
+    for dataset in users_data:
+        tokens[dataset["email"]]=_get_token(dataset).json()["token"]
+    
+    print(tokens)
 
 
 if __name__ == '__main__':
     users_data = prepare_users_data(filename=USERS_DATA_FILE)
-    users_created = fill_db_users(users_data=users_data)
+    fill_db_users(users_data=users_data)
 
-    if HEART_DATA_STORAGE:
-        created_data = fill_db_heart_data(heart_data_storage=HEART_DATA_STORAGE)
+    if GENERATE_TOKENS:
+        get_tokens(users_data=users_data)

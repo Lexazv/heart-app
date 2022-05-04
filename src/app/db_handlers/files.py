@@ -36,16 +36,3 @@ def get_files_by_user_id(conn, user_id):
             file_data.c.created_on
         ).where(file_data.c.user == user_id)
     ).fetchall()
-
-
-def delete_heart_data(conn, file_id):
-    """ Delete heart data file_by id. """
-    conn.execute(
-        sa.delete(heart_data).where(heart_data.c.file == file_id)
-    )
-
-    conn.execute(
-        sa.delete(file_data)
-        .where(file_data.c.id == file_id)
-        .returning(file_data.c.id, file_data.c.user, file_data.c.created_on)
-    ).fetchone()
