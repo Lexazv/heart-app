@@ -18,8 +18,3 @@ def start_db():
 @app.on_event('shutdown')
 def stop_db():
     close_db_connection(app)
-
-
-# TODO:
-#     - setup logging; search by 'print' word
-#     - implement heart data calculations

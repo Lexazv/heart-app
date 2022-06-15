@@ -10,7 +10,7 @@ def timer(func):
         async def wrapper(*args, **kwargs):
             start_time = time.perf_counter()
             result = await func(*args, **kwargs)
-            runtime = (time.perf_counter() - start_time) * 1000
+            runtime = time.perf_counter() - start_time
             print(f'Function {func.__name__} ran in {runtime} seconds.')
             return result
 
@@ -19,8 +19,9 @@ def timer(func):
         def wrapper(*args, **kwargs):
             start_time = time.perf_counter()
             result = func(*args, **kwargs)
-            runtime = (time.perf_counter() - start_time) * 1000
+            runtime = time.perf_counter() - start_time
             print(f'Function {func.__name__} ran in {runtime} seconds.')
             return result
 
     return wrapper
+
